@@ -87,4 +87,3 @@ Use Android Studio's AVD Manager to create and launch emulator
 - [Android Dev Docs](https://developer.android.com/)
 - [Jetpack Libraries](https://developer.android.com/jetpack)
 - [Room Database](https://developer.android.com/training/data-storage/room)
-
