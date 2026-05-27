@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up JDK 11
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
@@ -34,16 +34,18 @@ jobs:
       run: ./gradlew assembleRelease
 
     - name: Upload Debug APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: alarm-app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 30
 
     - name: Upload Release APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: alarm-app-release
         path: app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -61,5 +63,7 @@ jobs:
           - **Release APK**: For production use
           
           Download the APK files below and install on your Android phone.
+          
+          Visit [APK Installation Guide](https://github.com/ellepqe/alarm-app/blob/main/APK_INSTALLATION_GUIDE.md) for installation instructions.
         draft: false
         prerelease: false
