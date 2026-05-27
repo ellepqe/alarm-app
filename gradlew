@@ -36,7 +36,7 @@ while [ -h "$prog" ] ; do
     fi
 done
 savedir=`pwd`
-cd "`dirname \"$prog\"`" >/dev/null
+cd "`dirname "$prog"`" >/dev/null
 app_home=`pwd -P`
 cd "$savedir" >/dev/null
 
@@ -75,23 +75,23 @@ if case "$( uname )" in
 esac then
     # attempt to get the real path
     # for symlinks that resolve to UNC paths on windows
-    START_ESCAPED=`$READLINK -f \"$START\" 2>/dev/null`
+    START_ESCAPED=`$READLINK -f "$START" 2>/dev/null`
     if [ $? -eq 0 ]; then
-        START_ESCAPED="`$READLINK -f \"$START\""`
+        START_ESCAPED="`$READLINK -f "$START"`"
     else
-        START_ESCAPED="\"$START\""
+        START_ESCAPED="$START"
     fi
-    JAVA_HOME_ESCAPED="`$READLINK -f \"$JAVA_HOME\" 2>/dev/null`
+    JAVA_HOME_ESCAPED=`$READLINK -f "$JAVA_HOME" 2>/dev/null`
     if [ $? -eq 0 ]; then
-        JAVA_HOME_ESCAPED="`$READLINK -f \"$JAVA_HOME\""`
+        JAVA_HOME_ESCAPED="`$READLINK -f "$JAVA_HOME"`"
     else
-        JAVA_HOME_ESCAPED="\"$JAVA_HOME\""
+        JAVA_HOME_ESCAPED="$JAVA_HOME"
     fi
-    NEW_BASE_PATH="`$READLINK -f \"$APP_HOME\" 2>/dev/null`
+    NEW_BASE_PATH=`$READLINK -f "$APP_HOME" 2>/dev/null`
     if [ $? -eq 0 ]; then
-        NEW_BASE_PATH="`$READLINK -f \"$APP_HOME\""`
+        NEW_BASE_PATH="`$READLINK -f "$APP_HOME"`"
     else
-        NEW_BASE_PATH="\"$APP_HOME\""
+        NEW_BASE_PATH="$APP_HOME"
     fi
     START="$START_ESCAPED"
     JAVA_HOME="$JAVA_HOME_ESCAPED"
@@ -121,7 +121,7 @@ fi
 if ! "$cygwin" && ! "$msys" ; then
     MAX_FD_LIMIT=`ulimit -H -n`
     if [ $? -eq 0 ] ; then
-        if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ] ; then
+        if [ "$MAX_FD" = "maximum" ] ; then
             MAX_FD=$MAX_FD_LIMIT
         fi
         ulimit -n $MAX_FD
@@ -142,33 +142,27 @@ fi
 if "$cygwin" || "$msys" ; then
     APP_HOME=`cygpath --path --mixed "$APP_HOME"`
     CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
-
     JAVACMD=`cygpath --unix "$JAVACMD"`
-
-    # We build the pattern for arguments to be converted via cygpath
     ROOTDIRSRAW=`find -L / -maxdepth 3 -type d -name gradle 2>/dev/null`
     SEP=""
     for dir in $ROOTDIRSRAW ; do
         ROOTDIRS="$ROOTDIRS$SEP$dir"
-        SEP=|  
+        SEP="|"
     done
     OURCYGPATTERN="(^($ROOTDIRS))"
     classpatharg=`cygpath --path --mixed "$CLASS_PATH"`
     CLASSPATH="$classpatharg"
-
-    # Now convert the arguments - kludge to limit ourselves to /bin/sh
     i=0
     for arg in "$@" ; do
         CHECK=`echo "$arg"|egrep -c "^-"`
-        if [ $CHECK -eq 1 -a "$i" -ne 0 ] ; then
+        if [ $CHECK -eq 1 ] ; then
             arg=`cygpath --path --windows "$arg"`
         fi
-        ARGS="$ARGS \"$arg\""
+        ARGS="$ARGS $arg"
         i=`expr $i + 1`
     done
 fi
 
-# Collect all arguments for the java command, stacking in reverse order:
 eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS -classpath "$CLASS_PATH" org.gradle.wrapper.GradleWrapperMain "$@"
 
 exec "$JAVACMD" "$@"
