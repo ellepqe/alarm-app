@@ -46,10 +46,10 @@ APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS='" -Xmx64m" "-Xms64m"'
+DEFAULT_JVM_OPTS='-Xmx64m -Xms64m'
 
 # Use the maximum available, or set MAX_FD != infinity.
-if ! expr "$MAX_FD" : '[0-9]\\+$' > /dev/null; then
+if ! expr "$MAX_FD" : '[0-9]\+$' > /dev/null; then
     MAX_FD=maximum
 fi
 
@@ -96,34 +96,25 @@ esac then
     START="$START_ESCAPED"
     JAVA_HOME="$JAVA_HOME_ESCAPED"
     APP_HOME="$NEW_BASE_PATH"
-    # add a user-defined append to CLASS_PATH in the falling var
-        # CLASS_PATH also contains APP_HOME
     CLASS_PATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
 else
-    # For regular Un*x systems, that usually means the directories are standard.
     CLASS_PATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 fi
 
 # Determine the Java command to use in order to perform the actual submission.
 if [ -n "$JAVA_HOME" ] ; then
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
-        # IBM's JDK on AIX uses strange locations for the executables
         JAVACMD=$JAVA_HOME/jre/sh/java
     else
         JAVACMD=$JAVA_HOME/bin/java
     fi
     if [ ! -x "$JAVACMD" ] ; then
-        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
-
-Please set the JAVA_HOME variable in your environment to match the
-location of your Java installation."
+        echo "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME"
+        exit 1
     fi
 else
     JAVACMD=java
-    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
-
-Please set the JAVA_HOME variable in your environment to match the
-location of your Java installation."
+    which java >/dev/null 2>&1 || { echo "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH."; exit 1; }
 fi
 
 # Increase the maximum file descriptors if we can.
@@ -135,16 +126,16 @@ if ! "$cygwin" && ! "$msys" ; then
         fi
         ulimit -n $MAX_FD
         if [ $? -ne 0 ] ; then
-            warn "Could not set maximum file descriptor limit: $MAX_FD"
+            echo "Could not set maximum file descriptor limit: $MAX_FD"
         fi
     else
-        warn "Could not query maximum file descriptor limit: $MAX_FD_LIMIT"
+        echo "Could not query maximum file descriptor limit: $MAX_FD_LIMIT"
     fi
 fi
 
 # For Darwin, add options to specify how the application appears in the dock
 if "$darwin"; then
-    GRADLE_OPTS="$GRADLE_OPTS \"-Xdock:name=$APP_NAME\" \"-Xdock:icon=$APP_HOME/media/gradle.icns\""
+    GRADLE_OPTS="$GRADLE_OPTS -Xdock:name=$APP_NAME -Xdock:icon=$APP_HOME/media/gradle.icns"
 fi
 
 # For Cygwin or MSYS, switch paths to Windows format before running java
@@ -162,17 +153,15 @@ if "$cygwin" || "$msys" ; then
         SEP=|  
     done
     OURCYGPATTERN="(^($ROOTDIRS))"
-    # Add a user-defined append to CLASS_PATH in the falling var
-    # CLASS_PATH also contains APP_HOME
     classpatharg=`cygpath --path --mixed "$CLASS_PATH"`
     CLASSPATH="$classpatharg"
 
     # Now convert the arguments - kludge to limit ourselves to /bin/sh
     i=0
     for arg in "$@" ; do
-        CHECK=`echo "$arg"|egrep -c "^-"`                                 # check if it is an option
-        if [ $CHECK -eq 1 -a "$i" -ne 0 ] ; then                          # if it is an option and it's not the first arg
-            arg=`cygpath --path --windows "$arg"`                         # convert to windows path
+        CHECK=`echo "$arg"|egrep -c "^-"`
+        if [ $CHECK -eq 1 -a "$i" -ne 0 ] ; then
+            arg=`cygpath --path --windows "$arg"`
         fi
         ARGS="$ARGS \"$arg\""
         i=`expr $i + 1`
@@ -180,28 +169,6 @@ if "$cygwin" || "$msys" ; then
 fi
 
 # Collect all arguments for the java command, stacking in reverse order:
-#   * args from the command line
-#   * the main class name
-#   * -classpath
-#   * -D...appname settings
-#   * --module-path (only if needed)
-#   * DEFAULT_JVM_OPTS, JAVA_OPTS, and GRADLE_OPTS environment variables.
-
-# For Cygwin or MSYS, switch paths to Windows format before running java
-if "$cygwin" || "$msys" ; then
-    # Save all arguments for later
-    declare -a arguments=("$@")
-fi
-
-echo locate base dir as "$APP_HOME"
-echo starting gradle
-
-APP_ARGS=""
-for arg in "$@" ; do
-    ARGS="$ARGS \"$arg\""
-done
-
-# Collect all arguments for the java command
 eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS -classpath "$CLASS_PATH" org.gradle.wrapper.GradleWrapperMain "$@"
 
 exec "$JAVACMD" "$@"
